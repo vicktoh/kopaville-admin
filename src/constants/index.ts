@@ -1,0 +1,2 @@
+export const KOPAVILLE_USER = 'KOPAVILLE_USER';
+export const KOPAVILLE_NAME = 'KOPAVILLE';
