@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Auth } from "../types/Auth";
+import { CategorySliceType } from "../types/Category";
 import auth from './authSlice';
 import categories from './categoriesSlice';
 
@@ -13,7 +14,7 @@ export const store = configureStore({
 
 export type StoreType = {
    auth : Auth | null,
-   categories: string [] | null;
+   categories: CategorySliceType | null;
 }
 
 

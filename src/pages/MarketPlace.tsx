@@ -8,60 +8,49 @@ import {
     ModalBody,
     ModalCloseButton,
     ModalContent,
+    ModalFooter,
     ModalHeader,
     ModalOverlay,
     Table,
     TableContainer,
     Tbody,
     Td,
+    Text,
     Th,
     Thead,
     Tr,
     useDisclosure,
+    useToast,
 } from '@chakra-ui/react';
 import {
     collection,
-    getDocs,
     limit,
     onSnapshot,
     query,
 } from 'firebase/firestore';
-import { useDispatch } from 'react-redux';
 import { ProductStats } from '../components/ProductStats';
-import { setCategories } from '../reducers/categoriesSlice';
-import { useAppSelector } from '../reducers/types';
 import { db } from '../services/firebase';
 import { Product } from '../types/Product';
 import { ProductForm } from '../components/ProductForm';
+import { deleteProduct } from '../services/productsServices';
+import { useAppSelector } from '../reducers/types';
 
 export const MarketPlace: FC = () => {
-    const { categories } = useAppSelector(({ categories }) => ({ categories }));
-    const dispatch = useDispatch();
+    const categories = useAppSelector(({categories}) => categories)
     const [products, setProducts] = useState<Product[]>();
+    const [mode, setMode] = useState<"add"|"edit">('add');
     const [loadingProducts, setLoadingProducts] = useState<boolean>(false);
-    const [page, setpage] = useState<number>(1);
+    const [deleting, setDeleting] = useState<boolean>(false);
+    // const [page, setpage] = useState<number>(1);
+    const toast = useToast();
     const {
         isOpen: isProductModalOpen,
         onClose: onCloseProductModal,
         onOpen: onOpenProductModal,
     } = useDisclosure();
+    const {isOpen: isDeleteModalOpen, onClose: onCloseDeleteModal, onOpen: onOpenDeleteModal} = useDisclosure();
+    const [selectedProduct, setSelectedProduct] = useState<Product>();
 
-    useEffect(() => {
-        async function fetchCategories() {
-            const collectionRef = collection(db, 'categories');
-            const snapshot = await getDocs(collectionRef);
-            const cats: string[] = [];
-            snapshot.forEach((snap) => {
-                const data: any = snap.data();
-                cats.push(data?.title || '');
-            });
-            dispatch(setCategories(cats));
-        }
-
-        if (!categories) {
-            fetchCategories();
-        }
-    }, [categories, dispatch]);
 
     useEffect(() => {
         async function fetchProducts() {
@@ -73,6 +62,7 @@ export const MarketPlace: FC = () => {
                     const prods: Product[] = [];
                     snapshot.forEach((snap) => {
                         const data = snap.data() as Product;
+                        data.productId = snap.id;
                         prods.push(data);
                     });
 
@@ -88,6 +78,41 @@ export const MarketPlace: FC = () => {
         fetchProducts();
     }, []);
 
+    const deletePrompt = (id: number)=>{
+        if(!products) return;
+        setSelectedProduct(products[id]);
+        onOpenDeleteModal();
+    }
+
+    const onDeleteProduct = async () => {
+        if(!selectedProduct) return;
+        try {
+            setDeleting(true);
+            await deleteProduct(selectedProduct);
+
+        } catch (error) {
+            const err :any = error;
+            toast({ title: "Could not delete", description: err?.message || "Unknown delete", status: "error" });
+
+        }
+        finally{
+            setDeleting(false);
+            onCloseDeleteModal();
+        }
+    }
+
+
+    const editProduct = (i:number) =>{
+        if(!products) return;
+        setSelectedProduct(products[i]);
+        setMode('edit');
+        onOpenProductModal();
+    }
+    const addNewProduct = () =>{
+        setSelectedProduct(undefined);
+        setMode('add');
+        onOpenProductModal();
+    }
     return (
         <Flex direction="column" position="relative" px={5} pt={10}>
             <ProductStats />
@@ -100,7 +125,7 @@ export const MarketPlace: FC = () => {
             >
                 <Heading fontSize="md">Product List</Heading>
                 <Button
-                    onClick={onOpenProductModal}
+                    onClick={addNewProduct}
                     size="sm"
                     variant="solid"
                     colorScheme="brand"
@@ -123,17 +148,19 @@ export const MarketPlace: FC = () => {
                     <Tbody>
                         {products && products.length ? (
                             products.map((product, index) => (
-                                <Tr>
+                                <Tr key = {`product-${index}`}>
                                     <Td>{product.name}</Td>
                                     <Td>{product.vendorName}</Td>
-                                    <Td>{product.category}</Td>
+                                    <Td>{categories?.map[product.category]}</Td>
                                     <Td>{product.price}</Td>
                                     <Td>
                                         <HStack spacing={2}>
                                             <Button
                                                 size="xs"
-                                                colorScheme="brand"
+                                                borderColor="brand.500"
+                                                color="brand.500"
                                                 variant="outline"
+                                                onClick={()=> editProduct(index)}
                                             >
                                                 Edit
                                             </Button>
@@ -141,6 +168,8 @@ export const MarketPlace: FC = () => {
                                                 size="xs"
                                                 colorScheme="red"
                                                 variant="solid"
+                                                onClick={()=> deletePrompt(index)}
+                                                
                                             >
                                                 Delete
                                             </Button>
@@ -151,7 +180,7 @@ export const MarketPlace: FC = () => {
                         ) : (
                             <Tr>
                                 <Td colSpan={5} textAlign="center">
-                                    No Products Yet
+                                    No Categories Yet
                                 </Td>
                             </Tr>
                         )}
@@ -165,12 +194,30 @@ export const MarketPlace: FC = () => {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Product</ModalHeader>
+                    <ModalHeader>{`${mode} product`}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody px={5}>
-                        <ProductForm onCloseForm={onCloseProductModal} />
+                        <ProductForm mode={mode} onCloseForm={onCloseProductModal} product = {selectedProduct} />
                     </ModalBody>
                 </ModalContent>
+            </Modal>
+            <Modal isOpen={isDeleteModalOpen} onClose={onCloseDeleteModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Delete Product</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to delete this product</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <HStack spacing={4}>
+                        <Button variant="outline">Cancel</Button>
+                        
+                        <Button isLoading={deleting} onClick={()=> onDeleteProduct()} variant="solid" colorScheme="red">Yes</Button>
+                        </HStack>
+                        
+                    </ModalFooter>
+                </ModalContent>      
             </Modal>
         </Flex>
     );

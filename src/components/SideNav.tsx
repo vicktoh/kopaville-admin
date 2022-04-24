@@ -17,7 +17,7 @@ export const SideNav: FC = () => {
     const auth = useAppSelector(({ auth }) => auth);
 
     return (
-        <Flex direction="column" px={10} height="100vh" bg="brand.200" pb={5}>
+        <Flex direction="column" position={"sticky"} top={0} px={10} height="100vh" bg="brand.200" pb={5}>
             <Heading fontSize="lg" my={3}>
                 Welcome Admin
             </Heading>

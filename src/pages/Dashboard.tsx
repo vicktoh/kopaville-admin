@@ -1,14 +1,53 @@
-import React, {FC} from 'react';
+import { Container, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
+import React, {FC, useEffect, useState} from 'react';
+import { PostComponent } from '../components/PostComponent';
+import { listenOnPost } from '../services/postServices';
+import { Post } from '../types/Post';
 
 
 
 
 
 export const Dashboard: FC = () => {
+   const [posts, setPosts] = useState<Post []>();
+   const [loadingPost, setLoadingPosts] = useState<boolean>();
 
+   useEffect(()=>{
+      function observePosts (){
+         setLoadingPosts(true);
+         return listenOnPost((data)=> {
+            setLoadingPosts(false);
+            setPosts(data);
+         })
+      }
+      const unsub = observePosts();
+      return () => unsub();
+   }, []);
    return (
-      <div>
-         <h1>Hello there I am dashboard</h1>
-      </div>
+      <Flex direction="column" position="relative" width = "100%">
+         {/* Header */}
+         <Flex width = "100%" position = "sticky" top = {0} bg="secondary.300" py={5} px={3} zIndex={5}>
+            <Heading fontSize="md">Posts Moderation</Heading>
+         </Flex>
+         {/* Main content */}
+         <Flex width = "50%" px={5} pl={10} direction="column">
+
+            {
+               loadingPost && !posts ? (
+                  <Container size="lg" centerContent h = "2xl">
+                     <Spinner />
+                  </Container>
+               ): 
+
+               posts?.length ? posts.map((post, i) => (
+                  <PostComponent post={post} key = {`post-component-${i}`} />
+               )): 
+               <Flex direction="column" width="100%" h="2xl" justifyContent="center" alignItems="center">
+                  <Text>There are no Posts yet</Text>
+               </Flex>
+            }
+
+         </Flex>
+      </Flex>
    )
 }

@@ -1,5 +1,5 @@
-import { Flex } from '@chakra-ui/react';
 import React, {FC} from 'react';
+import { Flex } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 import { MarketTopNav } from '../components/MarketTopNav';
 

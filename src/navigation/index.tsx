@@ -1,16 +1,45 @@
-import React, {FC} from 'react';
+import { collection, onSnapshot } from 'firebase/firestore';
+import React, {FC, useEffect} from 'react';
+import { useDispatch } from 'react-redux';
 import { Routes, BrowserRouter, Route, Navigate } from 'react-router-dom';
+import { CategoriesPage } from '../pages/CategoriesPage';
 import { Dashboard } from '../pages/Dashboard';
 import { HistoryVille } from '../pages/HistoryVille';
 import { Layout } from '../pages/Layout';
 import { MarketPlace } from '../pages/MarketPlace';
 import { MarketPlaceLayout } from '../pages/MarketPlaceLayout';
 import { Users } from '../pages/Users';
+import { setCategories } from '../reducers/categoriesSlice';
+import { useAppSelector } from '../reducers/types';
+import { db } from '../services/firebase';
+import { Category } from '../types/Category';
 
 
 
 
 const MainRoutes : FC = ()=> {
+   const {categories} = useAppSelector(({categories})=> ({categories}));
+   const dispatch = useDispatch();
+
+   useEffect(()=>{
+     function listenOnCategories (){
+       const categoriesCollection = collection(db, "categories");
+       onSnapshot(categoriesCollection, (querysnaphot) => {
+         const cats: Category [] = [];
+         const categoriesMap: {[key:string]: string} = {};
+         querysnaphot.forEach((snap)=> {
+           const category = snap.data() as Category;
+           category.categoryId = snap.id;
+           cats.push(category);
+           categoriesMap[snap.id] = category.title;
+         });
+         dispatch(setCategories({ categories: cats, map: categoriesMap}));
+       })
+     }
+     if(!categories){
+       listenOnCategories();
+     }
+   }, [dispatch, categories]);
    
    return (
       <BrowserRouter>
@@ -23,7 +52,7 @@ const MainRoutes : FC = ()=> {
                 <Route path="users" element= {<Users/>}></Route>
                 <Route  path="/market" element = {<MarketPlaceLayout/>}>
                   <Route index element={<MarketPlace />} />
-                  <Route path = "categories" element={<MarketPlace/>}  />
+                  <Route path = "categories" element={<CategoriesPage/>}  />
                   <Route path = "vendors" element={<MarketPlace/>}  />
                 </Route>
                 <Route path="historyville" element={<HistoryVille />} />

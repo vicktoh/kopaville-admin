@@ -13,26 +13,39 @@ import {
     Textarea,
     useToast,
 } from '@chakra-ui/react';
-import {  ProductFormValue } from '../types/Product';
+import { Product, ProductFormValue } from '../types/Product';
 import { Form, Formik } from 'formik';
 import { useAppSelector } from '../reducers/types';
-import { addProduct } from '../services/productsServices';
-
+import { addProduct, editProduct } from '../services/productsServices';
 
 type ProductFormProps = {
-   onCloseForm: () => void;
-}
-export const ProductForm: FC<ProductFormProps> = ({ onCloseForm }) => {
+    onCloseForm: () => void;
+    mode: 'add' | 'edit';
+    product?: Product;
+};
+export const ProductForm: FC<ProductFormProps> = ({
+    onCloseForm,
+    mode,
+    product,
+}) => {
     const { categories } = useAppSelector(({ categories }) => ({ categories }));
     const [files, setFiles] = useState<FileList>();
     const toast = useToast();
-    const initialValues: ProductFormValue = {
-        name: '',
-        price: 0,
-        category: '',
-        quantity: 0,
-        description: '',
-    };
+    const initialValues: ProductFormValue = product
+        ? {
+              name: product.name,
+              price: product.price,
+              category: product.category,
+              quantity: product.quantity,
+              description: product.description,
+          }
+        : {
+              name: '',
+              price: 0,
+              category: '',
+              quantity: 0,
+              description: '',
+          };
 
     function onSelectFile(e: ChangeEvent<HTMLInputElement>) {
         if (e.target?.files?.length) {
@@ -68,30 +81,41 @@ export const ProductForm: FC<ProductFormProps> = ({ onCloseForm }) => {
             <Formik
                 initialValues={initialValues}
                 onSubmit={async (values, { setSubmitting }) => {
-                   if(files){
-                      await addProduct(values, files);
-                      onCloseForm()
-                   }
+                    if (files && mode === 'add') {
+                        await addProduct(values, files);
+                        onCloseForm();
+                    }
+                    if (mode === 'edit') {
+                        await editProduct(
+                            values,
+                            product?.productId || '',
+                            files
+                        );
+                        onCloseForm();
+                    }
                 }}
-                validate= {(values)=> {
-                   const errors: any = {};
-                   if(!values.category){
-                      errors.category = "You must select a category for this product";
-                   }
-                   if(!values.name){
-                      errors.name = "Product name cannot be empty";
-                   }
-                   if(!values.description){
-                      errors.description = "You must select a description for this product";
-                   }
-                   if(!values.price){
-                      errors.price = "You must select a description for this product";
-                   }
+                validate={(values) => {
+                    const errors: any = {};
+                    if (!values.category) {
+                        errors.category =
+                            'You must select a category for this product';
+                    }
+                    if (!values.name) {
+                        errors.name = 'Product name cannot be empty';
+                    }
+                    if (!values.description) {
+                        errors.description =
+                            'You must select a description for this product';
+                    }
+                    if (!values.price) {
+                        errors.price =
+                            'You must select a description for this product';
+                    }
 
-                   if(!files || !files.length){
-                      errors.photoUrl = "You must select at least one file for this product"
-                   }
-
+                    if (!files || !files.length) {
+                        errors.photoUrl =
+                            'You must select at least one file for this product';
+                    }
                 }}
             >
                 {({
@@ -166,13 +190,13 @@ export const ProductForm: FC<ProductFormProps> = ({ onCloseForm }) => {
                                 <option value="" disabled selected>
                                     Select Category
                                 </option>
-                                {categories?.length
-                                    ? categories.map((category, i) => (
+                                {categories && categories.categories?.length
+                                    ? categories.categories.map((category, i) => (
                                           <option
-                                              key={`category-${category}`}
-                                              value={category}
+                                              key={`category-${category.title}`}
+                                              value={category.categoryId}
                                           >
-                                              {category}
+                                              {category.title}
                                           </option>
                                       ))
                                     : null}
@@ -207,12 +231,25 @@ export const ProductForm: FC<ProductFormProps> = ({ onCloseForm }) => {
                                 onChange={onSelectFile}
                             />
                             <FormErrorMessage>
-                               {errors.photoUrl || ""}
+                                {errors.photoUrl || ''}
                             </FormErrorMessage>
                         </FormControl>
                         <HStack spacing={2} wrap="wrap">
                             {files ? renderFiles() : null}
                         </HStack>
+                        <HStack>
+                        {!files && mode === 'edit' && product?.images.length
+                            ? product.images.map((imageurl, i) => (
+                                  <Image
+                                    key = {`image-${i}`}
+                                      src={imageurl}
+                                      width="80px"
+                                      height="80px"
+                                  />
+                              ))
+                            : null}
+                        </HStack>
+                        
 
                         <Flex
                             direction="row"
@@ -226,10 +263,11 @@ export const ProductForm: FC<ProductFormProps> = ({ onCloseForm }) => {
                                 colorScheme="brand"
                                 isLoading={isSubmitting}
                             >
-                              
                                 Save
                             </Button>
-                            <Button variant="solid" onClick={onCloseForm}> Cancel</Button>
+                            <Button variant="solid" onClick={onCloseForm}>
+                                Cancel
+                            </Button>
                         </Flex>
                     </Form>
                 )}

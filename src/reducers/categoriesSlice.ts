@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CategorySliceType } from "../types/Category";
 
-const initialAuth: string[] | null = null;
+const initialAuth: CategorySliceType | null = null;
 
 const categoriesSlice = createSlice({
     name: 'categories',
     initialState: initialAuth,
     reducers: {
-        setCategories: (state: string[] | null, action: PayloadAction<string[]|null>) => {
-             state = action.payload === null ? null : [ ...(state || []), ...action.payload ];
+        setCategories: (state: CategorySliceType | null, action: PayloadAction<CategorySliceType|null>) => {
+             state = action.payload;
              return state as any  
         },
     },

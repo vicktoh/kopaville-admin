@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export type  Product = {
+   productId?: string;
    vendorId:string;
    userId: string;
    name: string;

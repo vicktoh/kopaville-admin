@@ -1,0 +1,41 @@
+[debug] [2022-04-20T15:41:31.286Z] ----------------------------------------------------------------------
+[debug] [2022-04-20T15:41:31.288Z] Command:       /opt/homebrew/Cellar/node/15.12.0/bin/node /opt/homebrew/bin/firebase init emulators
+[debug] [2022-04-20T15:41:31.288Z] CLI Version:   9.12.1
+[debug] [2022-04-20T15:41:31.288Z] Platform:      darwin
+[debug] [2022-04-20T15:41:31.288Z] Node Version:  v15.12.0
+[debug] [2022-04-20T15:41:31.291Z] Time:          Wed Apr 20 2022 16:41:31 GMT+0100 (West Africa Standard Time)
+[debug] [2022-04-20T15:41:31.292Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-04-20T15:41:31.295Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-04-20T15:41:31.295Z] > authorizing via signed-in user (vadelowo@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/kunle/codes/freelance/kopaville-admin
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2022-04-20T15:41:36.235Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2022-04-20T15:42:06.240Z] Timeout reached making request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100
+[debug] [2022-04-20T15:42:36.280Z] FirebaseError: Timeout reached making request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100
+    at Client.doRequest (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/apiv2.js:209:23)
+    at processTicksAndRejections (node:internal/process/task_queues:94:5)
+    at async Client.request (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/apiv2.js:96:20)
+    at async getProjectPage (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/management/projects.js:233:17)
+    at async getFirebaseProjectPage (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/management/projects.js:250:23)
+    at async selectProjectInteractively (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/management/projects.js:95:41)
+    at async Object.doSetup [as project] (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/init/features/project.js:87:27)
+    at async init (/Users/kunle/.config/yarn/global/node_modules/firebase-tools/lib/init/index.js:19:9)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.

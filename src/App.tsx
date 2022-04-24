@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import { useAppSelector } from './reducers/types';
 import {onAuthStateChanged} from 'firebase/auth';
 import { firebaseAuth } from './services/firebase';

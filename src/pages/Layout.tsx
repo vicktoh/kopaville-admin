@@ -27,11 +27,12 @@ export const Layout: FC = () => {
                     md: 'repeat(6, 1fr)',
                     lg: 'repeat(6, 1fr)',
                 }}
+                position="relative"
             >
                 {isMobile ? null : (
                     <GridItem
                         colSpan={1}
-                        width="100%"
+                        
                         position={'relative'}
                         height="100vh"
                     >
