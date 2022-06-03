@@ -50,10 +50,14 @@ const MainRoutes : FC = ()=> {
                     <Route element = {<Dashboard/>} index />
                 </Route>
                 <Route path="users" element= {<Users/>}></Route>
+                <Route path="jobs" element= {<Users/>}></Route>
+                <Route path="comments" element= {<Users/>}></Route>
+               
                 <Route  path="/market" element = {<MarketPlaceLayout/>}>
                   <Route index element={<MarketPlace />} />
                   <Route path = "categories" element={<CategoriesPage/>}  />
                   <Route path = "vendors" element={<MarketPlace/>}  />
+                  <Route path = "orders" element={<MarketPlace/>}  />
                 </Route>
                 <Route path="historyville" element={<HistoryVille />} />
             </Route>

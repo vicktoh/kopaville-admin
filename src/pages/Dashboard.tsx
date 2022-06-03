@@ -24,13 +24,13 @@ export const Dashboard: FC = () => {
       return () => unsub();
    }, []);
    return (
-      <Flex direction="column" position="relative" width = "100%">
+      <Flex direction="column" position="relative" width = "100%" height="100vh" overflow="scroll">
          {/* Header */}
          <Flex width = "100%" position = "sticky" top = {0} bg="secondary.300" py={5} px={3} zIndex={5}>
             <Heading fontSize="md">Posts Moderation</Heading>
          </Flex>
          {/* Main content */}
-         <Flex width = "50%" px={5} pl={10} direction="column">
+         <Flex  px={20} pl={10} direction="column">
 
             {
                loadingPost && !posts ? (
