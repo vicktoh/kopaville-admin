@@ -1,2 +1,4 @@
-export const KOPAVILLE_USER = 'KOPAVILLE_USER';
-export const KOPAVILLE_NAME = 'KOPAVILLE';
+export const KOPAVILLE_USER = "KOPAVILLE_USER";
+export const KOPAVILLE_NAME = "KOPAVILLE";
+export const ALGOLIA_APP_ID = "K4IFG2B4PM";
+export const ALGOLIA_SEARCH_API_KEY = "860741bf2d0cf5100fbee3cfb0fbee96";
