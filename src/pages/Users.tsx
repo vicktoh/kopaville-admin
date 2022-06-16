@@ -228,7 +228,6 @@ export const Users: FC = () => {
           page,
           hitsPerPage: 10,
         });
-        console.log({ response });
         const { hits, nbHits, page: currentPage, nbPages } = response;
         setUsers(hits as any);
         setpageStats({

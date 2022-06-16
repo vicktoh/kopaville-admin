@@ -27,40 +27,17 @@ export type ProductFormValue = {
   category: string;
   photoUrl?: string;
 };
+
+export type ProductFilter = {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+};
+
 export type CartItem = {
   productName: string;
   productId?: string;
   productImage: string;
   quantity: number;
   price: number;
-};
-export type Billing = {
-  address: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  phone: string;
-};
-
-export enum DeliveryStatus {
-  pending = "pending",
-  shipped = "shipped",
-  delivered = "delivered",
-}
-export type Order = {
-  cart: CartItem[];
-  userId: string;
-  date: Timestamp | number | Date;
-  paymentStatus: "pending" | "paid" | "pending";
-  deliveryDate?: Timestamp | number | Date;
-  deliveryStatus?: DeliveryStatus;
-  transactionRef: string;
-  amount: number;
-  billing?: Billing;
-  paymentDetails?: {
-    transactionRef: string;
-    date: string;
-    amount: number;
-  };
-  objectID?: string;
 };

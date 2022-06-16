@@ -23,6 +23,9 @@ import {
 
 type PostCommentType = {
   post: Post;
+  onDelete: () => void;
+  onBlock: () => void;
+  commentsPrompt: () => void;
 };
 
 const ImageScroller: FC<{ images: string[] }> = ({ images }) => {
@@ -39,6 +42,9 @@ const ImageScroller: FC<{ images: string[] }> = ({ images }) => {
 
 export const PostComponent: FC<PostCommentType> = ({
   post: { avartar, imageUrl, videoUrl, text, dateCreated },
+  onDelete,
+  onBlock,
+  commentsPrompt,
 }) => {
   return (
     <Flex width="100%" direction="column" mb={3} borderBottomWidth={1}>
@@ -53,7 +59,7 @@ export const PostComponent: FC<PostCommentType> = ({
           <Heading fontSize="sm">{avartar?.username}</Heading>
         </HStack>
         <Text fontSize="sm" color="brand.300">
-          {dateCreated.toDate().toDateString()}
+          {new Date(dateCreated as number).toLocaleDateString()}
         </Text>
       </Flex>
       {imageUrl?.length ? <ImageScroller images={imageUrl} /> : null}
@@ -74,19 +80,19 @@ export const PostComponent: FC<PostCommentType> = ({
             icon={<BsThreeDotsVertical />}
           />
           <MenuList>
-            <MenuItem>
+            <MenuItem onClick={onDelete}>
               <HStack>
                 <BsTrash />
                 <Text>Delete</Text>
               </HStack>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={commentsPrompt}>
               <HStack>
                 <BsChatDots />
                 <Text>Comments</Text>
               </HStack>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={onBlock}>
               <HStack>
                 <BsStopCircle />
                 <Text>Block User</Text>

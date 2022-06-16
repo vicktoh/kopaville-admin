@@ -1,5 +1,7 @@
+import { doc, getDoc } from "firebase/firestore";
 import { httpsCallable, getFunctions } from "firebase/functions";
-import { firebaseApp } from "./firebase";
+import { Profile } from "../types/Profile";
+import { db, firebaseApp } from "./firebase";
 const functions = getFunctions(firebaseApp);
 export const setAdmin = httpsCallable<
   { userId: string; admin: boolean | null },
@@ -13,3 +15,9 @@ export const enableUser = httpsCallable<
   { userId: string },
   { status: "success" | "failed"; message?: string }
 >(functions, "enableUser");
+
+export const fetchProfile = async (userId: string) => {
+  const docRef = doc(db, `users/${userId}`);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data() as Profile;
+};

@@ -18,6 +18,7 @@ export const UserProfile: FC<UserProfileProps> = ({ profile }) => {
           <Heading fontSize="md">{profile.loginInfo.username || ""}</Heading>
         </VStack>
       </HStack>
+      <Text>{profile.loginInfo?.email}</Text>
       <HStack spacing={8} my={5}>
         <Text fontSize="md" fontWeight="semibold">{`Followers: ${
           profile.followerships?.followers || 0

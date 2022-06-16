@@ -14,14 +14,19 @@ export const StateComponent: FC<StateComponentProps> = ({
 }) => {
   if (loading) {
     return (
-      <Flex flex="1 1 auto" justifyContent="center" alignItems="center">
+      <Flex
+        flex="1 1 auto"
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Spinner />
         <Text fontSize="md">{loadingText}</Text>
       </Flex>
     );
   }
   return (
-    <Flex flex="1 1 auto">
+    <Flex flex="1 1 auto" direction="column">
       <Heading fontSize="lg">{text}</Heading>
       <Text>{description}</Text>
     </Flex>

@@ -17,7 +17,7 @@ export const Layout: FC = () => {
     >
       {isMobile ? null : <SideNav />}
 
-      <Flex width="100%">
+      <Flex ml={isMobile ? 0 : "16rem"} width="100%">
         {/* {isMobile ? <MobileNav/> : null} */}
         <Outlet />
       </Flex>

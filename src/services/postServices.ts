@@ -1,5 +1,7 @@
 import {
   collection,
+  deleteDoc,
+  doc,
   limit,
   onSnapshot,
   orderBy,
@@ -26,4 +28,9 @@ export const listenOnPost = (callback: (data: any) => void) => {
 
     callback(posts);
   });
+};
+
+export const deleteUserPost = (postId: string) => {
+  const userPostDoc = doc(db, `posts/${postId}`);
+  return deleteDoc(userPostDoc);
 };

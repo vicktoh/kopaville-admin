@@ -7,7 +7,7 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useFormik } from "formik";
 import React, { FC } from "react";
 import { useDispatch } from "react-redux";
@@ -31,13 +31,24 @@ export const LoginForm: FC = () => {
           values.password
         );
         const user = credentials.user;
-        const auth: Auth = {
-          userId: user.uid,
-          displayName: user.displayName || "Unknown name",
-          photoUrl: user.photoURL || "",
-          lastSeen: user.metadata?.lastSignInTime || "",
-        };
-        dispatch(setAuth(auth));
+        const idToken = await user.getIdTokenResult();
+        const claims = idToken.claims;
+        console.log("my claims", claims);
+        if (claims?.admin) {
+          const auth: Auth = {
+            userId: user.uid,
+            displayName: user.displayName || "Unknown name",
+            photoUrl: user.photoURL || "",
+            lastSeen: user.metadata?.lastSignInTime || "",
+          };
+          dispatch(setAuth(auth));
+        } else {
+          toast({
+            title: "You are not an admin user",
+            status: "error",
+          });
+          signOut(firebaseAuth);
+        }
       } catch (error) {
         const err: any = error;
         toast({

@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export interface Post {
-  dateCreated: Timestamp;
+  dateCreated: Timestamp | number;
   mediaType: "Video" | "Image" | "None";
   creatorId: string;
   likes: number;
@@ -15,4 +15,17 @@ export interface Post {
     photoUrl?: string;
     username: string;
   };
+  objectID: string;
 }
+
+export type Comment = {
+  id?: string;
+  date: Timestamp | number;
+  userId: string;
+  postId: string;
+  photoUrl: string;
+  comment: string;
+  fullname: string;
+  username: string;
+  objectID: string;
+};

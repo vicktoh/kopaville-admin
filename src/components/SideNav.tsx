@@ -9,9 +9,15 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useAppSelector } from "../reducers/types";
-import { BsChatSquare, BsClockHistory, BsCartCheck } from "react-icons/bs";
+import {
+  BsChatSquare,
+  BsCartCheck,
+  BsFolder2Open,
+  BsFlag,
+} from "react-icons/bs";
 import { MdSecurity } from "react-icons/md";
 import { Link, useMatch } from "react-router-dom";
+import { logOUt } from "../services/authSevices";
 
 export const SideNav: FC = () => {
   const auth = useAppSelector(({ auth }) => auth);
@@ -19,9 +25,10 @@ export const SideNav: FC = () => {
   return (
     <Flex
       direction="column"
-      position={"sticky"}
+      position={"fixed"}
       top={0}
       px={10}
+      maxWidth="16rem"
       height="100vh"
       bg="brand.100"
       pb={5}
@@ -64,16 +71,27 @@ export const SideNav: FC = () => {
           Admin Users
         </Button>
         <Button
-          color={!!useMatch("/historyville") ? "brand.500" : "black"}
+          color={!!useMatch("/jobs") ? "brand.500" : "black"}
           fontWeight="normal"
           size="sm"
           as={Link}
-          to="/historyville"
-          leftIcon={<BsClockHistory />}
+          to="/jobs"
+          leftIcon={<BsFolder2Open />}
+          variant="ghost"
+        >
+          Jobs
+        </Button>
+        <Button
+          color={!!useMatch("/reports") ? "brand.500" : "black"}
+          fontWeight="normal"
+          size="sm"
+          as={Link}
+          to="/reports"
+          leftIcon={<BsFlag />}
           variant="ghost"
         >
           {" "}
-          HistoryVille
+          Reports
         </Button>
         <Button
           color={!!useMatch("/market") ? "brand.500" : "black"}
@@ -88,7 +106,13 @@ export const SideNav: FC = () => {
           Kopaville Market
         </Button>
       </VStack>
-      <Button variant="solid" colorScheme="brand" mt="auto" mb={5}>
+      <Button
+        onClick={() => logOUt()}
+        variant="solid"
+        colorScheme="brand"
+        mt="auto"
+        mb={5}
+      >
         Logout
       </Button>
     </Flex>

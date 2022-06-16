@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Button, Flex, HStack } from "@chakra-ui/react";
 import { NavLink, useMatch } from "react-router-dom";
 
-export const MarketTopNav: FC = () => {
+export const ReportTopNav: FC = () => {
   return (
     <Flex
       direction="row"
@@ -18,28 +18,19 @@ export const MarketTopNav: FC = () => {
           variant="ghost"
           size="xs"
           as={NavLink}
-          to={`/market`}
-          color={!!useMatch("/market") ? "brand.400" : "black"}
+          to={`/reports`}
+          color={!!useMatch("/reports") ? "brand.400" : "black"}
         >
-          Products
+          Reported Posts
         </Button>
         <Button
           variant="ghost"
           size="xs"
           as={NavLink}
-          to={`/market/categories`}
-          color={!!useMatch("/market/categories") ? "brand.400" : "black"}
+          to={`/reports/users`}
+          color={!!useMatch("/reports/users") ? "brand.400" : "black"}
         >
-          Categories
-        </Button>
-        <Button
-          variant="ghost"
-          size="xs"
-          as={NavLink}
-          to={`/market/orders`}
-          color={!!useMatch("/market/orders") ? "brand.400" : "black"}
-        >
-          Orders
+          Reported Users
         </Button>
       </HStack>
     </Flex>

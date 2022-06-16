@@ -17,19 +17,25 @@ function App() {
     if (!auth) {
       const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
         if (user) {
-          // let idToken = await user.getIdTokenResult();
-          // let claims = idToken.claims;
-          const userDetails = {
-            userId: user.uid,
-            email: user.email || "",
-            phoneNumber: user.phoneNumber || "",
-            displayName: user.displayName || "",
-            lastSeen: user.metadata?.lastSignInTime || "",
-            photoUrl: user.photoURL || "",
-          };
+          const idToken = await user.getIdTokenResult();
+          const claims = idToken.claims;
+          console.log({ claims });
+          if (claims?.admin) {
+            const userDetails = {
+              userId: user.uid,
+              email: user.email || "",
+              phoneNumber: user.phoneNumber || "",
+              displayName: user.displayName || "",
+              lastSeen: user.metadata?.lastSignInTime || "",
+              photoUrl: user.photoURL || "",
+            };
 
-          dispatch(setAuth(userDetails));
-          setLoading(false);
+            dispatch(setAuth(userDetails));
+            setLoading(false);
+          } else {
+            setLoading(false);
+            dispatch(setAuth(null));
+          }
         } else {
           setLoading(false);
           dispatch(setAuth(null));
