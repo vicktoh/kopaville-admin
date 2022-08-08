@@ -29,22 +29,45 @@ import { BsSearch } from "react-icons/bs";
 import { StateComponent } from "../components/StateComponent";
 import { UserProfile } from "../components/UserProfile";
 import { algoliaIndex } from "../services/algolia";
-import { disableUser, enableUser, setAdmin } from "../services/userServices";
+import {
+  disableUser,
+  enableUser,
+  setAdmin,
+  updateUserProfile,
+} from "../services/userServices";
 import { Profile } from "../types/Profile";
 type UserRowProps = {
   profile: Profile;
   onBlockPress: (profile: Profile) => void;
   onViewProfile: (profile: Profile) => void;
   onAdminPrompt: (profile: Profile) => void;
+  onVerify: (profile: Profile) => void;
 };
 const UserRow: FC<UserRowProps> = ({
   profile,
   onBlockPress,
   onViewProfile,
   onAdminPrompt,
+  onVerify,
 }) => {
   const { loginInfo, profileUrl, profile: generalProfile, isAdmin } = profile;
-
+  const [verifying, setVerifying] = useState<boolean>(false);
+  const toast = useToast();
+  const onVerifyUser = async () => {
+    try {
+      setVerifying(true);
+      await updateUserProfile(profile.userId, {
+        ...profile,
+        verified: !!!profile?.verified,
+      });
+      onVerify(profile);
+    } catch (error) {
+      console.log(error);
+      toast({ title: "Could not verify User", status: "error" });
+    } finally {
+      setVerifying(false);
+    }
+  };
   return (
     <Tr>
       <Td>
@@ -59,16 +82,31 @@ const UserRow: FC<UserRowProps> = ({
             onClick={() => onBlockPress(profile)}
             colorScheme="red"
             variant="outline"
+            size="sm"
           >
             {profile?.blocked ? "Unblock" : "Block"}
           </Button>
-          <Button colorScheme="green" onClick={() => onViewProfile(profile)}>
+          <Button
+            size="sm"
+            onClick={onVerifyUser}
+            colorScheme="blue"
+            variant="outline"
+            isLoading={verifying}
+          >
+            {profile?.verified ? "Unverify" : "Verify"}
+          </Button>
+          <Button
+            size="sm"
+            colorScheme="green"
+            onClick={() => onViewProfile(profile)}
+          >
             View Profile
           </Button>
           <Button
-            colorScheme="blue"
+            colorScheme="green"
             variant="outline"
             onClick={() => onAdminPrompt(profile)}
+            size="sm"
           >
             {isAdmin ? "Revoke Admin" : "Make Admin"}
           </Button>
@@ -163,6 +201,22 @@ export const Users: FC = () => {
     } finally {
       setMakingAdmin(false);
     }
+  };
+  const onVerifyUser = async (user: Profile) => {
+    const newusers = users?.map(({ userId, ...rest }) => {
+      if (userId === user?.userId) {
+        return {
+          ...rest,
+          userId,
+          verified: !!!user?.verified,
+        };
+      }
+      return {
+        ...rest,
+        userId,
+      };
+    });
+    setUsers(newusers);
   };
   const blockUser = async () => {
     if (!selectedUser) return;
@@ -301,6 +355,7 @@ export const Users: FC = () => {
                   onAdminPrompt={onAdminPrompt}
                   onViewProfile={onViewProfile}
                   onBlockPress={onBlockPrompt}
+                  onVerify={onVerifyUser}
                   profile={user}
                   key={user.userId}
                 />

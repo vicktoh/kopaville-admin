@@ -1,11 +1,17 @@
 import { Timestamp } from "firebase/firestore";
-
+export enum ProductGrade {
+  "New" = "New",
+  "Fairly Used" = "Fairly Used",
+  "Used" = "Used",
+}
 export type Product = {
   productId?: string;
   vendorId: string;
   userId: string;
   name: string;
+  variants?: Record<string, [{ text: string }]>;
   rating?: number;
+  grade?: ProductGrade;
   numberOfRating?: number;
   purchases?: number;
   price: number;
@@ -26,6 +32,8 @@ export type ProductFormValue = {
   description: string;
   category: string;
   photoUrl?: string;
+  grade?: ProductGrade;
+  variants?: Record<string, [{ text: string }]>;
 };
 export type CartItem = {
   productName: string;

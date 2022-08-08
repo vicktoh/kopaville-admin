@@ -64,4 +64,5 @@ export interface Profile {
     following: number;
     followers: number;
   };
+  verified?: boolean;
 }
