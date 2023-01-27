@@ -1,4 +1,12 @@
+import { APP_ENV } from "../config";
+
 export const KOPAVILLE_USER = "KOPAVILLE_USER";
 export const KOPAVILLE_NAME = "KOPAVILLE";
-export const ALGOLIA_APP_ID = "K4IFG2B4PM";
-export const ALGOLIA_SEARCH_API_KEY = "860741bf2d0cf5100fbee3cfb0fbee96";
+export const DEV_ALGOLIA_ID = "K4IFG2B4PM";
+export const PROD_ALGOLIA_ID = "A8F5S4VTVX";
+export const ALGOLIA_APP_ID =
+  APP_ENV === "dev" ? DEV_ALGOLIA_ID : PROD_ALGOLIA_ID;
+export const DEV_ALGOLIA_SERACH_KEY = "860741bf2d0cf5100fbee3cfb0fbee96";
+export const PROD_ALGOLIA_SEARCH_KEY = "7fd2cf53e290951d203636665bb3b179";
+export const ALGOLIA_SEARCH_API_KEY =
+  APP_ENV === "dev" ? DEV_ALGOLIA_SERACH_KEY : PROD_ALGOLIA_SEARCH_KEY;
